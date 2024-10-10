@@ -1,0 +1,49 @@
+# aqui começa a função 1 das chamadas
+
+
+chamaarFuncaoPrinciapl(){
+    echo 'voce voltou para funçãoprincipal'
+    sleep 5s
+}
+
+chamadaGoogle(){
+    echo $'\E[31;1mParece que você me chamou chamada google! \E[m'
+    echo $arquivoLogin
+    #funcaoGoogleChrome 'Denilson' 'https://studio.moises.ai/player2/aff5fa2f-4534-4c8e-8ec5-856c68103736/?context=spliter'
+
+    xinput test "$DispositivoEscolhido" | while read -r line; do
+    [[ "${line}" = 'key press   68' && ${habilitado} = 'yes' ]] && { habilitado='no'; chamaarFuncaoPrinciapl ;break ;}
+    [[ "${line}" = 'key press   67' && ${habilitado} = 'no' ]]  && habilitado='yes'
+    if [[ "${habilitado}" = 'yes' ]]; then
+            case $line in
+        ############################ LISTA FUNÇÃO GOOGLE CHROME #########################################################################################################
+
+                "key press   56") listaBubble=('https://bubble.io/page?type=page&name=setor_administrativo&id=viverbemseguroscrm&tab=tabs-1&subtab=Plan'
+            'https://bubble.io/page?type=page&name=setor_administrativo&id=viverbemseguroscrm&tab=tabs-3&subtab=Data+Types&type_id=user'
+            'https://www.sistemaviverbemseguros.com/version-test')
+                funcaoGoogleChrome 'DIB' "${listaBubble[@]}"                                                                                             # Tecla 'b'
+                ;;
+                "key press   31")
+                funcaoGoogleChrome 'Brenner' 'https://manual.bubble.io/help-guides/integrations/api/the-bubble-api/the-data-api/data-api-requests'       # Tecla 'i'
+                ;;
+                "key press   58") funcaoGoogleChrome 'Denilson' 'https://studio.moises.ai/player2/aff5fa2f-4534-4c8e-8ec5-856c68103736/?context=spliter' # Tecla 'm'
+                ;;
+                "key press   29") funcaoGoogleChrome 'Brenner' 'https://www.youtube.com/'                                                                # Tecla 'y'
+                ;;
+                "key press   27") funcaoGoogleChrome 'Brenner' 'https://web.telegram.org/a/'                                                             # Tecla 'y'
+                ;;
+                "key press   54") funcaoGoogleChrome 'Brenner' 'https://chatgpt.com/c/23e4078d-65e4-4d51-805d-02ef15c3bc80?oai-dm=1'                     # Tecla 'c'
+                ;;
+                "key press   55") funcaoGoogleChrome 'Brenner' 'https://app.botconversa.com.br/2547/flows'                                               # Tecla '55'
+                ;;
+                "key press   25") funcaoGoogleChrome 'DIB' 'https://web.whatsapp.com/'                                                                   # Tecla '25'
+                ;;
+                "key press   33") funcaoGoogleChrome 'Brenner' 'https://docs.google.com/spreadsheets/d/1V5fF38klj31iScKXRML4hEdD0L_hO5gf0NU6Pb9tizc/edit?gid=1523514419#gid=1523514419' # Tecla 'p'
+                ;;
+
+              esac
+    fi
+done
+        ############################################# FIM ################################################################################################################
+
+}

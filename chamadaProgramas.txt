@@ -1,0 +1,37 @@
+# aqui começa a função 6 das chamadas
+
+
+chamaarFuncaoPrinciapl(){
+    echo 'voce voltou para funçãoprincipal'
+    sleep 5s
+}
+
+chamadaProgramas(){
+    echo $'\E[31;1mParece que você me chamou chamada de programas! \E[m'
+    echo $arquivoLogin
+    #funcaoGoogleChrome 'Denilson' 'https://studio.moises.ai/player2/aff5fa2f-4534-4c8e-8ec5-856c68103736/?context=spliter'
+
+    xinput test "$DispositivoEscolhido" | while read -r line; do
+    [[ "${line}" = 'key press   68' && ${habilitado} = 'yes' ]] && { habilitado='no'; chamaarFuncaoPrinciapl ;break ;}
+    [[ "${line}" = 'key press   67' && ${habilitado} = 'no' ]]  && habilitado='yes'
+    if [[ "${habilitado}" = 'yes' ]]; then
+            case $line in
+                "key press   41") funcaoAbrirProgramas 'flameshot gui -s &>- &'                                          # Tecla 'f'
+                ;;
+                "key press   45") funcaoAbrirProgramas 'kdeconnect-app &>- &'                                            # Tecla 'k'
+                ;;
+                "key press   32") funcaoAbrirProgramas 'plasma-systemmonitor --page-name Histórico &>- &'                # Tecla 'o'
+                ;;
+                "key press   42") funcaoAbrirProgramas 'peek &>- &'                                                      # Tecla 'G'
+                ;;
+                "key press   30") funcaoAbrirProgramas 'plasma-discover &>- &'                                           # Tecla 'G' # Tecla 'u'
+                ;;
+                "key press   28") funcaoAbrirProgramas 'konsole --workdir ${HOME}/Desktop &>- &'                         # Tecla 't'
+                ;;
+                
+            esac
+        ############################################# FIM ##############################################################################################################
+    fi
+done
+
+}

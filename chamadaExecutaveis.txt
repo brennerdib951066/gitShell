@@ -1,0 +1,33 @@
+# aqui começa a função 4 das chamadas
+
+
+chamaarFuncaoPrinciapl(){
+    echo 'voce voltou para funçãoprincipal'
+    sleep 5s
+}
+
+chamadaExecutaveis(){
+    echo $'\E[31;1mParece que você me chamoun é verdade chamada de executáveis! \E[m'
+    echo $arquivoLogin
+    #funcaoGoogleChrome 'Denilson' 'https://studio.moises.ai/player2/aff5fa2f-4534-4c8e-8ec5-856c68103736/?context=spliter'
+
+    xinput test "$DispositivoEscolhido" | while read -r line; do
+    [[ "${line}" = 'key press   68' && ${habilitado} = 'yes' ]] && { habilitado='no'; chamaarFuncaoPrinciapl ;break ;}
+    [[ "${line}" = 'key press   67' && ${habilitado} = 'no' ]]  && habilitado='yes'
+    if [[ "${habilitado}" = 'yes' ]]; then
+            case $line in
+        ############################ LISTA FUNÇÃO ARQUIVOS EXECUTAVEIS ##################################################################################################
+                "key press   46") funcaoArquivoExecutavel '/usr/bin/dibScripts/python/viverBemSeguros/loginViverBem.py'                                 # Tecla 'l' # Mostra um popup do python
+                ;;
+                "key press   17") funcaoArquivoExecutavel '/usr/bin/dibScripts/python/viverBemSeguros/backupBcDiario.py' # Tecla '8'
+                ;;
+                "key press   38") funcaoArquivoExecutavel '/usr/bin/dibScripts/python/viverBemSeguros/deploy.py' # Tecla '38'
+                ;;
+                "key press   26") funcaoArquivoExecutavel '/usr/bin/dibScripts/python/viverBemSeguros/etiquetas.py' # Tecla '26'
+                
+            esac
+        ############################################# FIM ##############################################################################################################
+    fi
+done
+
+}
