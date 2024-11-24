@@ -152,18 +152,18 @@ fla(){
 ((UID==0)) && { printf $'\E[31;1mSem root\E[m'; exit 1 ;}
 listaMenu=("Salvar Localmente" "Salvar Copy")
 
-while :; do
-	[[ "${diretorio}" ]] && break # Se "${diretorio}" não for vazio prossiga
-	read -p $'\E[32;2mDiretorio para a imagem\E[m:   ' diretorio
-done
+#while :; do
+#	[[ "${diretorio}" ]] && break # Se "${diretorio}" não for vazio prossiga
+#	read -p $'\E[32;2mDiretorio para a imagem\E[m:   ' diretorio
+#done
 PS3=$'\E[37;1mOpção:\E[m   '
-read -p $'\E[37;1m Nome do arquivo:\E[m   ' nomeArquivo
+#read -p $'\E[37;1m Nome do arquivo:\E[m   ' nomeArquivo
 
-/usr/bin/flameshot config -f ${nomeArquivo} ## Mudando o nome do arquivo quando salvar
+#/usr/bin/flameshot config -f ${nomeArquivo} ## Mudando o nome do arquivo quando salvar
 select menu in "${listaMenu[@]}"; do
     case $REPLY in
-        "1") /usr/bin/flameshot gui -s -p "${diretorio}"  ;;
-        "2") /usr/bin/flameshot gui -c                    ;;
+        "1") /usr/bin/flameshot gui    &>- & ;;
+        "2") /usr/bin/flameshot gui -c &>- & ;;
         *) printf "Não existe essa opção\n"
     esac
 done
@@ -343,36 +343,102 @@ chmod +x "${1}" && kate "${1}" &>- &
 criandoMarkdown(){
 dataAtual=$(date +%d-%m-%Y)
 
-cat>>"${1}"<<EOF
+cat>>"${dataAtual}.md"<<EOF
 # O que foi criado hoje? ${dataAtual}
-#### SETORES
-1. Comercial
-!["IMAGEM"](nadaDeAlteracao.png)
-####  Backends
-  - [ ] ###### Exemplo1
-  - [ ] ###### Exemplo2
-  - [ ] ###### Exemplo3
-  - [ ] ###### Exemplo4
-    - [ ] **Testado?**
-2. Administrativo
-!["IMAGEM"](nadaDeAlteracao.png)
-####  Backends
-  - [ ] ###### Exemplo1
-  - [ ] ###### Exemplo2
-  - [ ] ###### Exemplo3
-  - [ ] ###### Exemplo4
-  - [ ] **Testado?**
-2. Financeiro
-!["IMAGEM"](nadaDeAlteracao.png)
-####  Backends
-  - [ ] ###### Exemplo1
-  - [ ] ###### Exemplo2
-  - [ ] ###### Exemplo3
-  - [ ] ###### Exemplo4
-  - [ ] **Testado?**
+### COMERCIAL
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  Editor
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  Banco de dados
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  BackEnd
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
 
+!["Visualização web"]()
+#####  Visualização web comercial
+
+### ADMINISTRATIVO
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  Editor
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  Banco de dados
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  BackEnd
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["Visualização web"]()
+#####  Visualização web administrativo
+### FIANANCEIRO
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  Editor
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  Banco de dados
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+#####  BackEnd
+- [ ] ###### Exemplo1
+- [ ] ###### Exemplo2
+- [ ] ###### Exemplo3
+- [ ] ###### Exemplo4
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["IMAGEM"]()
+!["Visualização web"]()
+#####  Visualização web financeiro
 EOF
-typora "${1}" &>- &
+typora "${dataAtual}.md" &>- &
 
 }
 
@@ -494,9 +560,6 @@ areaDeTrabalhoUsuario="$(desktopUsuario)"
 echo "$areaDeTrabalhoUsuario"
 #export SHELL=/bin/bash
 
-export PATH=$PATH:~/"${areaDeTrabalhoUsuario}"
-export PATH="$PATH:/usr/bin/dibScripts/python/viverBemSeguros"
-export PATH="$PATH:/usr/bin/dibScripts/python/bibliotecas/"
-export PATH="$PATH:/usr/bin/dibScripts/shells/stable"
-export PATH="$PATH:/usr/bin/dibScripts/shells/stable/bibliotecas"
+export PATH=~/.local/bin:/usr/local/bin:/usr/bin:/usr/local/games:snap/bin:${HOME}/'Área de Trabalho'/sh:${HOME}/'Área de Trabalho'/powershell
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
