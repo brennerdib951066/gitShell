@@ -3,34 +3,46 @@
 
 arquivoLogin="/usr/bin/dibScripts/shells/stable/bibliotecas/credenciais/credencial.sh"
 arquivoCor="/usr/bin/dibScripts/shells/stable/bibliotecas/cor/cores.txt"
-arquivoNotificacao="notificarWhatsApp.txt"
+arquivoNotificacao="/usr/bin/dibScripts/shells/stable/bibliotecas/notificacao/notificarWhatsApp.txt"
 dataAtual="$(date +%Y-%m-%d)"
 dataAnterior="$(date -d '-1 days' +%Y-%m-%d)"
 diaDaSemana=$(date +%A)
 dataAtualMaisUm="$(date -d '1 days' +%Y-%m-%d)"
-headerText='brenner'
+headerText='menu get bubble tipo de cliente'
 listaPerguntas=('micaelly ramos' 'thales ramalho' 'lais morais' 'nathália santos' 'calebe pascoal/césar/df' 'jully isabelle/pos vendas')
 listaPerguntasReceber=('receber aqui no konsole' 'receber no whatsapp')
-interativo='brenner'
-versao='brenner'
+interativo='no'
+versao='1.0.3'
+tipoDeVersao=(
+    'beta'
+    'completa'
+)
+# Na versão 1.0.2 foram adicionados adesão por cada gerente, adesão completo calculando todos os gerentes
+# Na versão 1.0.3 foram adicionados está modo itálico o total de adesão, e modo negrito para os texto versão, adicioanado também a variavél tipoDeVersao
 
 # INICIO DAS FUNÇÕES
 receberNoKonsole(){
     echo -e "\E[42;1mNa data atual ${requisicao^^} registrou\E[m \E[41;1m$((${count#*:}))\E[m"
 }
 
-enviarPeloServidor(){	
-	dataBrasil=$(awk -F- '{print $3"-"$2"-"$1}' <<<$dataAtual)
-	local totalDeVendas=(
+enviarPeloServidor(){
+        dataBrasil=$(awk -F- '{print $3"-"$2"-"$1}' <<<$dataAtual)
+        local totalDeVendas=(
 
-	) # lista vazia para receber o valor total das vendas
-	local notificarBrenner=(
+        ) # lista vazia para receber o valor total das vendas
+        local totalDeValorDeAdesao=(
 
-	)
-	local notificarDenner=(
+        ) # lista vazia para receber o valor total das vendas
+        local notificarBrenner=(
 
-	)
-	local textoTopo='brenner'
+        )
+        local notificarDenner=(
+
+        )
+        local notificarDaniele=(
+
+        )
+        local textoTopo='registro de etiquetas viver bem seguros *('$dataBrasil')*'
    { echo "Chamando o servidor para enviar a notificação"; sleep 2s ; }
     #notificar "${idsBot[0]}" "AQUI ESTÁ O RELETÓRIO DE HOJE: (${diaDaSemana^^},${dataBrasil})"
     #notificar "${idsBot[1]}" "AQUI ESTÁ O RELETÓRIO DE HOJE: (${diaDaSemana^^},${datBrasil})"
@@ -38,13 +50,20 @@ enviarPeloServidor(){
         #sleep 2s
         echo "${listaPerguntas[i]}"
         count=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${listaPerguntas[i]}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /count/ {print}')
+
+        valorAdesao=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${listaPerguntas[i]}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"},{"key":"deletee","constraint_type":"equals","value":"não"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /valorDaAdesao/ {gsub(/[A-Za-z:]/,"",$0);valorDaAdeso += $0}END{print valorDaAdeso}')
+        echo "TOTAL: ${valorAdesao}"
+        #sleep 5s
         totalDeVendas[$i]=${count#*:} #$((${count#*:}))
+        totalDeValorDeAdesao[$i]=${valorAdesao}
+
         echo 'VALOr ATUAL '${totalDeVendas[$i]}''
         #sleep 5s
-        for ((id=0;id<=1;id++)); do
+        for ((id=0;id<=2;id++)); do
             echo $'O ID É AGORA: '${id}''
             [[ ${id} -eq 0 ]] && notificarBrenner[i]=${count#*:}
             [[ ${id} -eq 1 ]] && notificarDenner[i]=${count#*:}
+            [[ ${id} -eq 2 ]] && notificarDaniele[i]=${count#*:}
             #notificar "${idsBot[id]}" "${listaPerguntas[i]}, registrou: $((${count#*:}))"
         done
         echo "Todos venderam $((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]))"
@@ -53,22 +72,27 @@ enviarPeloServidor(){
 
 echo $'o brenner recebe '${notificarBrenner[@]}''
 echo $'o DENNER recebe '${notificarDenner[@]}''
-tipoTexto='brenner'
-campanha='brenner'
-
+tipoTexto='custom'
+campanha='centralDeAtendimento'
+# Calculando o valor total de todos os gerentes em relação a adesão
+totalAdesao=$(
+    awk -F',' -v adesao1=${totalDeValorDeAdesao[0]} -v adesao2=${totalDeValorDeAdesao[1]} -v adesao3=${totalDeValorDeAdesao[2]} -v adesao4=${totalDeValorDeAdesao[3]} -v adesao5=${totalDeValorDeAdesao[4]} -v adesao6=${totalDeValorDeAdesao[5]} 'BEGIN {print adesao1+adesao2+adesao3+adesao4+adesao5+adesao6}'
+)
+echo "VALOR TOTAL DE ADESAO PARA TODOS: ${totalAdesao}"
+#sleep 10s
 #$(notificar 2>-)
 echo -e "\E[31;1m IDBOT: ${idsBot[0]}  \E[m"
     for ((i=0;i<=${#idsBot[@]}-2;i++)); do
-        notificar "${idsBot[i]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n\n_TOTAL: $((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]))_\n\n\nVERSÃO: ${versao}"
+        notificar "${idsBot[i]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n${totalDeValorDeAdesao[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n${totalDeValorDeAdesao[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n${totalDeValorDeAdesao[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n${totalDeValorDeAdesao[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n${totalDeValorDeAdesao[4]}\n\n*${listaPerguntas[5]^^}*\n${notificarBrenner[5]}\n${totalDeValorDeAdesao[5]}\n\n_TOTAL DE VENDAS:  *$((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]+totalDeVendas[5]))*_\n_TOTAL ADESÃO: *R\$ ${totalAdesao}*_\n\n*VERSÃO: ${versao} \`${tipoDeVersao[0]^^}\`*"
         echo $i
     done
-
-notificar "${idsBot[0]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarDenner[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarDenner[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarDenner[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarDenner[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarDenner[4]}\n\nTOTAL: _$((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]))_\n\n\nVERSÃO: ${versao}"
+# Aqui é para caso precise de receber
+#notificar "${idsBot[0]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n\n*${listaPerguntas[5]^^}*\n${notificarBrenner[5]}\n\n_TOTAL: $((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]+totalDeVendas[5]))_\n\n\nVERSÃO: ${versao}"
 
 }
 ###############################################################
 read -t 10 -p "você está no modo interativo ${interativo^^},Deseja mudar [S/n]" mudancaInterativo
-[[ "${mudancaInterativo}" =~ (sim|SIM|s|S) ]] && interativo='brenner'
+[[ "${mudancaInterativo}" =~ (sim|SIM|s|S) ]] && interativo='yes'
 if [[ "${interativo}" = 'yes' ]]; then
     if [[ -z $1 ]]; then
         echo $'\E[37;1mOnde deseja receber o total de vendas dos gerentes:\E[m'
@@ -79,6 +103,7 @@ if [[ "${interativo}" = 'yes' ]]; then
                 ;;
                 2) { echo -e "Escolheu receber em ${REPLY^^}"; receber="${listaPerguntasReceber[1]}"; break ; }
             esac
+v            esac
 
         done
     else
@@ -121,5 +146,4 @@ else
 
     enviarPeloServidor
 fi
-
 
