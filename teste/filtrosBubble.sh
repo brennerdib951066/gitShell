@@ -12,13 +12,14 @@ headerText='menu get bubble tipo de cliente'
 listaPerguntas=('micaelly ramos' 'thales ramalho' 'lais morais' 'nathália santos' 'calebe pascoal/césar/df' 'jully isabelle/pos vendas')
 listaPerguntasReceber=('receber aqui no konsole' 'receber no whatsapp')
 interativo='no'
-versao='1.0.3'
+versao='1.0.4'
 tipoDeVersao=(
     'beta'
     'completa'
 )
 # Na versão 1.0.2 foram adicionados adesão por cada gerente, adesão completo calculando todos os gerentes
 # Na versão 1.0.3 foram adicionados está modo itálico o total de adesão, e modo negrito para os texto versão, adicioanado também a variavél tipoDeVersao
+# Na versão 1.0.4 foi adicionado uma sintaxe de visualização no whatsapp onde a letra será destacado em branco, adicionado no total de vendas, total de adesão
 
 # INICIO DAS FUNÇÕES
 receberNoKonsole(){
@@ -83,7 +84,7 @@ echo "VALOR TOTAL DE ADESAO PARA TODOS: ${totalAdesao}"
 #$(notificar 2>-)
 echo -e "\E[31;1m IDBOT: ${idsBot[0]}  \E[m"
     for ((i=0;i<=${#idsBot[@]}-2;i++)); do
-        notificar "${idsBot[i]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n${totalDeValorDeAdesao[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n${totalDeValorDeAdesao[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n${totalDeValorDeAdesao[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n${totalDeValorDeAdesao[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n${totalDeValorDeAdesao[4]}\n\n*${listaPerguntas[5]^^}*\n${notificarBrenner[5]}\n${totalDeValorDeAdesao[5]}\n\n_TOTAL DE VENDAS:  *$((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]+totalDeVendas[5]))*_\n_TOTAL ADESÃO: *R\$ ${totalAdesao}*_\n\n*VERSÃO: ${versao} \`${tipoDeVersao[0]^^}\`*"
+        notificar "${idsBot[i]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n${totalDeValorDeAdesao[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n${totalDeValorDeAdesao[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n${totalDeValorDeAdesao[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n${totalDeValorDeAdesao[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n${totalDeValorDeAdesao[4]}\n\n*${listaPerguntas[5]^^}*\n${notificarBrenner[5]}\n${totalDeValorDeAdesao[5]}\n\n_TOTAL DE VENDAS:  *\`$((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]+totalDeVendas[5]))\`*_\n_TOTAL ADESÃO: *\`R\$ ${totalAdesao}\`*_\n\n*VERSÃO: ${versao} \`${tipoDeVersao[0]^^}\`*"
         echo $i
     done
 # Aqui é para caso precise de receber
