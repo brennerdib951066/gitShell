@@ -31,7 +31,7 @@ notificar(){
 # Função de enviar o push para o gitHub
 enviandoPush(){
 
-    cd ~/"Área de Trabalho/${1}" 2>>/"${arquivoDeErro}" && { git add .; git commit -m "Nova atualização"; git push origin main;} || notificar '385910829' "${mensagemAviso[1]^^} ${1}"
+    cd ~/"Área de Trabalho/${1}" 2>>/"${arquivoDeErro}" && { git add .; git commit -m "Nova atualização"; git push origin main;} || { notificar '385910829' "${mensagemAviso[1]^^} ${1}"; exit 1 ;}
     echo $i
 
 
@@ -44,3 +44,5 @@ for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
     echo "${listaPastaPush[i]}"
     #pwd
 done
+
+notificar '385910829' "\`${mensagemAviso[0]^^}\`"
