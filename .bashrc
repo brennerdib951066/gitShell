@@ -562,4 +562,5 @@ echo "$areaDeTrabalhoUsuario"
 
 export PATH=~/.local/bin:/usr/local/bin:/usr/bin:/usr/local/games:snap/bin:${HOME}/'Área de Trabalho'/sh:${HOME}/'Área de Trabalho'/powershell
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# teste api gitHub via token
 
