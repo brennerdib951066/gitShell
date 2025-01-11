@@ -7,7 +7,7 @@ arquivoNotificacao="/usr/bin/dibScripts/shells/stable/bibliotecas/notificacao/no
 campanha='DIB'
 arquivoDeErro=~/"Área de Trabalho/erroGit"
 mensagemAviso=(
-    'Seus arquivos foram enviados com sucesso para o github',
+    'Seus arquivos foram enviados com sucesso para o github'
     'erro ao enviar arquivos para o github'
 )
 # Lista que receberá as pastas onde já tem todo o processo de git push configurado
@@ -18,7 +18,7 @@ listaPastaPush=(
     'gitShell'
     'gitVbs'
 )
-
+# Função de notificar via botConversa para whatsApp
 notificar(){
         chaveApi='c7e572f0-c17b-4304-9478-b68641234d6c'
         urlApi='https://backend.botconversa.com.br/api/v1/webhook/subscriber/subscriber_id/send_message/'
@@ -45,4 +45,4 @@ for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
     #pwd
 done
 
-notificar '385910829' "\`${mensagemAviso[0]^^}\`"
+notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
