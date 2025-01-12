@@ -46,3 +46,4 @@ for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
 done
 
 notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
+# TESTE 1
