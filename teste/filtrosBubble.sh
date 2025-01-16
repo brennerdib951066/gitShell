@@ -12,7 +12,8 @@ headerText='menu get bubble tipo de cliente'
 listaPerguntas=('micaelly ramos' 'thales ramalho' 'lais morais' 'nathália santos' 'calebe pascoal/césar/df' 'jully isabelle/pos vendas')
 listaPerguntasReceber=('receber aqui no konsole' 'receber no whatsapp')
 interativo='no'
-versao='1.0.4'
+teste='sim'
+versao='1.0.5'
 tipoDeVersao=(
     'beta'
     'completa'
@@ -20,6 +21,7 @@ tipoDeVersao=(
 # Na versão 1.0.2 foram adicionados adesão por cada gerente, adesão completo calculando todos os gerentes
 # Na versão 1.0.3 foram adicionados está modo itálico o total de adesão, e modo negrito para os texto versão, adicioanado também a variavél tipoDeVersao
 # Na versão 1.0.4 foi adicionado uma sintaxe de visualização no whatsapp onde a letra será destacado em branco, adicionado no total de vendas, total de adesão
+# Na versão 1.0.5 foi adicionado na variavél count que busca a quantidade vendas do dia, agora faz outro filtro para buscar somente os não deletados
 
 # INICIO DAS FUNÇÕES
 receberNoKonsole(){
@@ -50,13 +52,17 @@ enviarPeloServidor(){
     for i in "${!listaPerguntas[@]}"; do
         #sleep 2s
         echo "${listaPerguntas[i]}"
-        count=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${listaPerguntas[i]}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /count/ {print}')
+        count=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${listaPerguntas[i]}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"},{"key":"deletee","constraint_type":"equals","value":"não"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /count/ {print}')
 
         valorAdesao=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${listaPerguntas[i]}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"},{"key":"deletee","constraint_type":"equals","value":"não"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /valorDaAdesao/ {gsub(/[A-Za-z:]/,"",$0);valorDaAdeso += $0}END{print valorDaAdeso}')
+        #vidas=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${listaPerguntas[i]}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"},{"key":"deletee","constraint_type":"equals","value":"não"},{"key":"qtds.VIdas","constraint_type":"greater than","value":"0"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /qtds.VIdas/ {gsub(/[A-Za-z:]/,"",$0);vidas += $0}END{print vidas}')
+        vidas=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${listaPerguntas[i]}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"},{"key":"deletee","constraint_type":"equals","value":"não"},{"key":"qtds.VIdas","constraint_type":"greater than","value":"0"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",.]/,"",$0)&& /qtdsVIdas/ {gsub(/[A-Za-z:]/,"",$0);vida += $0}END{print vida}')
+        echo "VIDAS $vidas"
         echo "TOTAL: ${valorAdesao}"
         #sleep 5s
         totalDeVendas[$i]=${count#*:} #$((${count#*:}))
         totalDeValorDeAdesao[$i]=${valorAdesao}
+        totalDeVidas[$i]=${vidas}
 
         echo 'VALOr ATUAL '${totalDeVendas[$i]}''
         #sleep 5s
@@ -79,14 +85,21 @@ campanha='centralDeAtendimento'
 totalAdesao=$(
     awk -F',' -v adesao1=${totalDeValorDeAdesao[0]} -v adesao2=${totalDeValorDeAdesao[1]} -v adesao3=${totalDeValorDeAdesao[2]} -v adesao4=${totalDeValorDeAdesao[3]} -v adesao5=${totalDeValorDeAdesao[4]} -v adesao6=${totalDeValorDeAdesao[5]} 'BEGIN {print adesao1+adesao2+adesao3+adesao4+adesao5+adesao6}'
 )
+
+totalVidas=$(
+    awk -F',' -v vida1=${totalDeVidas[0]} -v vida2=${totalDeVidas[1]} -v vida3=${totalDeValorDeAdesao[2]} -v vida4=${totalDeVidas[3]} -v vida5=${totalDeVidas[4]} -v vida6=${totalDeVidas[5]} 'BEGIN {print vida1+vida2+vida3+vida4+vida5+vida6}'
+)
 echo "VALOR TOTAL DE ADESAO PARA TODOS: ${totalAdesao}"
+echo "TOTAL VIDAS: ${totalVidas}"
+
 #sleep 10s
 #$(notificar 2>-)
 echo -e "\E[31;1m IDBOT: ${idsBot[0]}  \E[m"
-    for ((i=0;i<=${#idsBot[@]}-2;i++)); do
-        notificar "${idsBot[i]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n${totalDeValorDeAdesao[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n${totalDeValorDeAdesao[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n${totalDeValorDeAdesao[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n${totalDeValorDeAdesao[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n${totalDeValorDeAdesao[4]}\n\n*${listaPerguntas[5]^^}*\n${notificarBrenner[5]}\n${totalDeValorDeAdesao[5]}\n\n_TOTAL DE VENDAS:  *\`$((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]+totalDeVendas[5]))\`*_\n_TOTAL ADESÃO: *\`R\$ ${totalAdesao}\`*_\n\n*VERSÃO: ${versao} \`${tipoDeVersao[0]^^}\`*"
+    for ((i=0;i<=${#idsBot[@]}-1;i++)); do
+        notificar "${idsBot[i]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n${totalDeValorDeAdesao[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n${totalDeValorDeAdesao[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n${totalDeValorDeAdesao[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n${totalDeValorDeAdesao[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n${totalDeValorDeAdesao[4]}\n\n*${listaPerguntas[5]^^}*\n${notificarBrenner[5]}\n${totalDeValorDeAdesao[5]}\n\n_TOTAL DE VENDAS:_  *\`$((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]+totalDeVendas[5]))\`*\n_TOTAL VIDAS:_ *\`$((totalDeVidas[0]+totalDeVidas[1]+totalDeVidas[2]+totalDeVidas[3]+totalDeVidas[4]+totalDeVidas[5]))\`*\n_TOTAL ADESÃO: *\`R\$ ${totalAdesao}\`*_\n\n*VERSÃO: ${versao} \`${tipoDeVersao[0]^^}\`*"
         echo $i
     done
+[[ "${teste,,}" == "sim" || "${1,,}" == 'teste' ]] && exit
 # Aqui é para caso precise de receber
 #notificar "${idsBot[0]}" "${textoTopo^^}\n\n*${listaPerguntas[0]^^}*\n${notificarBrenner[0]}\n\n*${listaPerguntas[1]^^}*\n${notificarBrenner[1]}\n\n*${listaPerguntas[2]^^}*\n${notificarBrenner[2]}\n\n*${listaPerguntas[3]^^}*\n${notificarBrenner[3]}\n\n*${listaPerguntas[4]^^}*\n${notificarBrenner[4]}\n\n*${listaPerguntas[5]^^}*\n${notificarBrenner[5]}\n\n_TOTAL: $((totalDeVendas[0]+totalDeVendas[1]+totalDeVendas[2]+totalDeVendas[3]+totalDeVendas[4]+totalDeVendas[5]))_\n\n\nVERSÃO: ${versao}"
 
@@ -104,7 +117,6 @@ if [[ "${interativo}" = 'yes' ]]; then
                 ;;
                 2) { echo -e "Escolheu receber em ${REPLY^^}"; receber="${listaPerguntasReceber[1]}"; break ; }
             esac
-v            esac
 
         done
     else
