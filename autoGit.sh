@@ -70,7 +70,7 @@ for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
 done
 
 notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
-#dataAtualAwk=$(dataVerificar "${dataAtual}")
+dataVerificar
 echo ${diasFaltante[0]}
 echo ${diasFaltante[1]}
 echo ${diasFaltante[3]}
