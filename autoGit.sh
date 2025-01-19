@@ -21,7 +21,6 @@ diaAnotificar=(
     '3'
     '2'
     '1'
-    '0'
 )
 diasFaltante=(
 
@@ -54,12 +53,11 @@ enviandoPush(){
 
 }
 # Função para verificar a data atual para manda para o case já dinamicamente, através do awk
-dataVerificar(){
-    for ((d=0;d<=${#diaAnotificar[@]};d++)) ; do
-        diasFaltante[d]=$(awk -v dia="${diaAnotificar[d]}" 'BEGIN{FS="-";OFS="-"}{dia = int($1-dia);mes = int($2+1);ano = int($3);print dia"-0"mes"-"ano}' <<< "${1}")
-        #echo ${diasFaltante[d]}
-    done
-} # FUNCAO DATAVERIFICAR
+#dataVerificar(){
+#    for ((d=0;d<=${diaAnotificar[@]};d++)) ; do
+#        diasFaltante[d]=$(awk -v dia="${diaAnotificar[d]}" 'BEGIN{FS="-";OFS="-"}{dia = int($1-dia);mes = int($2+1);ano = int($3);print dia"-0"mes"-"ano}' <<< "${1}")
+#    done
+#}
 
 
 for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
@@ -71,23 +69,20 @@ for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
 done
 
 notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
-dataVerificar "${dataAtual}"
-echo ${diasFaltante[0]}
-echo ${diasFaltante[1]}
-echo ${diasFaltante[3]}
-echo ${diasFaltante[4]}
-exit
+#dataAtualAwk=$(dataVerificar "${dataAtual}")
+#echo $dataAtualAwk
+#exit
 case "${dataAtual}" in
-    "${diasFaltante[0]}")
+    '15-02-2025')
         notificar '385910829' "\`${mensagemAvisoToken[0]^^}\`"
     ;;
-    "${diasFaltante[1]}")
+    '16-02-2025')
         notificar '385910829' "\`${mensagemAvisoToken[1]^^}\`"
     ;;
-    "${diasFaltante[2]}")
+    '17-02-2025')
         notificar '385910829' "\`${mensagemAvisoToken[2]^^}\`"
     ;;
-    "${diasFaltante[3]}")
+    '18-02-2025')
         notificar '385910829' "\`*${mensagemAvisoToken[3]^^} ${dataAtual}*\`"
     ;;
     *)
