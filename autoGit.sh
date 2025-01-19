@@ -64,7 +64,7 @@ case "${dataAtual}" in
         notificar '385910829' "\`${mensagemAvisoToken[2]^^}\`"
     ;;
     '18-02-2025')
-        notificar '385910829' "\`*${mensagemAvisoToken[3]^^}*\`"
+        notificar '385910829' "\`*${mensagemAvisoToken[3]^^} ${dataAtual}*\`"
     ;;
     *)
         notificar '385910829' "\`Não se preocupe seu token git está de boa\`"
