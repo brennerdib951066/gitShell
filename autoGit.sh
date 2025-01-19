@@ -4,7 +4,7 @@
 arquivoLogin="/usr/bin/dibScripts/shells/stable/bibliotecas/credenciais/credencial.sh"
 arquivoCor="/usr/bin/dibScripts/shells/stable/bibliotecas/cor/cores.txt"
 arquivoNotificacao="/usr/bin/dibScripts/shells/stable/bibliotecas/notificacao/notificarWhatsApp.txt"
-dataAtual=$(date -d "+30 days" +%d-%m-%Y)
+dataAtual=$(date +%d-%m-%Y)
 campanha='DIB'
 arquivoDeErro=~/"Área de Trabalho/erroGit"
 mensagemAviso=(
