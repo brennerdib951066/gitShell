@@ -17,6 +17,7 @@ mensagemAvisoToken=(
     'Faltam 1 dias para o seu tokem expirar'
     'Hoje irá expirar seu token'
 )
+diaAnotificar='3'
 # Lista que receberá as pastas onde já tem todo o processo de git push configurado
 listaPastaPush=(
     'gitAwk'
@@ -43,6 +44,11 @@ enviandoPush(){
 
 
 }
+# Função para verificar a data atual para manda para o case já dinamicamente, através do awk
+dataVerificar(){
+    awk -v dia="${diaAnotificar}" 'BEGIN{FS="-";OFS="-"}{dia = int($1-dia);mes = int($2+1);ano = int($3);print dia"-0"mes"-"ano}' <<< "${1}"
+}
+
 
 for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
 
@@ -53,6 +59,9 @@ for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
 done
 
 notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
+dataAtualAwk=$(dataVerificar <<< "${dataAtual}")
+echo $dataAtualAwk
+exit
 case "${dataAtual}" in
     '15-02-2025')
         notificar '385910829' "\`${mensagemAvisoToken[0]^^}\`"
