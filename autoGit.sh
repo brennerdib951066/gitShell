@@ -57,7 +57,7 @@ enviandoPush(){
 dataVerificar(){
     for ((d=0;d<=${#diaAnotificar[@]}-1;d++)) ; do
         diasFaltante[d]=$(awk -v dia="${diaAnotificar[d]}" 'BEGIN{FS="-";OFS="-"}{dia = int($1-dia);mes = int($2+1);ano = int($3);print dia"-0"mes"-"ano}' <<< "${1}")
-        echo ${diasFaltante[d]}
+        #echo ${diasFaltante[d]}
     done
 } # FUNCAO DATAVERIFICAR
 
@@ -72,10 +72,10 @@ done
 
 notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
 dataVerificar "${dataAtual}"
-#echo ${diasFaltante[0]}
-#echo ${diasFaltante[1]}
-#echo ${diasFaltante[3]}
-#echo ${diasFaltante[4]}
+echo ${diasFaltante[0]}
+echo ${diasFaltante[1]}
+echo ${diasFaltante[3]}
+echo ${diasFaltante[4]}
 exit
 case "${dataAtual}" in
     "${diasFaltante[0]}")
