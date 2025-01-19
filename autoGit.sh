@@ -55,7 +55,7 @@ enviandoPush(){
 }
 # Função para verificar a data atual para manda para o case já dinamicamente, através do awk
 dataVerificar(){
-    for ((d=0;d<=${#diaAnotificar[@]}-1;d++)) ; do
+    for ((d=0;d<=${#diaAnotificar[@]};d++)) ; do
         diasFaltante[d]=$(awk -v dia="${diaAnotificar[d]}" 'BEGIN{FS="-";OFS="-"}{dia = int($1-dia);mes = int($2+1);ano = int($3);print dia"-0"mes"-"ano}' <<< "${1}")
         #echo ${diasFaltante[d]}
     done
