@@ -63,13 +63,13 @@ dataAtualAwk=$(dataVerificar "${dataAtual}")
 #echo $dataAtualAwk
 #exit
 case "${dataAtual}" in
-    '15-02-2025')
+    "${dataAtualAwk}")
         notificar '385910829' "\`${mensagemAvisoToken[0]^^}\`"
     ;;
-    '16-02-2025')
+    "${dataAtualAwk}")
         notificar '385910829' "\`${mensagemAvisoToken[1]^^}\`"
     ;;
-    '17-02-2025')
+    "${dataAtualAwk}")
         notificar '385910829' "\`${mensagemAvisoToken[2]^^}\`"
     ;;
     '18-02-2025')
