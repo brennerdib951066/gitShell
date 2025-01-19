@@ -17,7 +17,15 @@ mensagemAvisoToken=(
     'Faltam 1 dias para o seu tokem expirar'
     'Hoje irá expirar seu token'
 )
-diaAnotificar='3'
+diaAnotificar=(
+    '3'
+    '2'
+    '1'
+    '0'
+)
+diasFaltante=(
+
+)
 # Lista que receberá as pastas onde já tem todo o processo de git push configurado
 listaPastaPush=(
     'gitAwk'
@@ -26,6 +34,7 @@ listaPastaPush=(
     'gitShell'
     'gitVbs'
 )
+versao='1.0.0'
 # Função de notificar via botConversa para whatsApp
 notificar(){
         chaveApi='c7e572f0-c17b-4304-9478-b68641234d6c'
@@ -46,8 +55,10 @@ enviandoPush(){
 }
 # Função para verificar a data atual para manda para o case já dinamicamente, através do awk
 dataVerificar(){
-    awk -v dia="${diaAnotificar}" 'BEGIN{FS="-";OFS="-"}{dia = int($1-dia);mes = int($2+1);ano = int($3);print dia"-0"mes"-"ano}' <<< "${1}"
-}
+    for ((d=0;d<=${diaAnotificar[@]};d++)) ; do
+        diasFaltante[d]=$(awk -v dia="${diaAnotificar[d]}" 'BEGIN{FS="-";OFS="-"}{dia = int($1-dia);mes = int($2+1);ano = int($3);print dia"-0"mes"-"ano}' <<< "${1}")
+    done
+} # FUNCAO DATAVERIFICAR
 
 
 for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
@@ -59,20 +70,23 @@ for ((i=0;i<="${#listaPastaPush[@]}"-1;i++)) ; do
 done
 
 notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
-dataAtualAwk=$(dataVerificar "${dataAtual}")
-#echo $dataAtualAwk
-#exit
-case "$(date -d '+30 days -3 days' +%d-%m-%Y)" in
-    "${dataAtualAwk}")
+#dataAtualAwk=$(dataVerificar "${dataAtual}")
+echo ${diasFaltante[0]}
+echo ${diasFaltante[1]}
+echo ${diasFaltante[3]}
+echo ${diasFaltante[4]}
+exit
+case "${dataAtual}" in
+    "${diasFaltante[0]}")
         notificar '385910829' "\`${mensagemAvisoToken[0]^^}\`"
     ;;
-    "${dataAtualAwk}")
+    "${diasFaltante[1]}")
         notificar '385910829' "\`${mensagemAvisoToken[1]^^}\`"
     ;;
-    "${dataAtualAwk}")
+    "${diasFaltante[2]}")
         notificar '385910829' "\`${mensagemAvisoToken[2]^^}\`"
     ;;
-    '18-02-2025')
+    "${diasFaltante[3]}")
         notificar '385910829' "\`*${mensagemAvisoToken[3]^^} ${dataAtual}*\`"
     ;;
     *)
