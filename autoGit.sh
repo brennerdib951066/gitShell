@@ -62,7 +62,7 @@ notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a not
 dataAtualAwk=$(dataVerificar "${dataAtual}")
 #echo $dataAtualAwk
 #exit
-case "${dataAtual}" in
+case "$(date -d '+30 days -3 days' +%d-%m-%Y)" in
     "${dataAtualAwk}")
         notificar '385910829' "\`${mensagemAvisoToken[0]^^}\`"
     ;;
