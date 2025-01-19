@@ -60,8 +60,8 @@ done
 
 notificar '385910829' "\`${mensagemAviso[0]^^}\`" # Se tudo for um sucesso a notificação será enviada
 dataAtualAwk=$(dataVerificar "${dataAtual}")
-echo $dataAtualAwk
-exit
+#echo $dataAtualAwk
+#exit
 case "${dataAtual}" in
     '15-02-2025')
         notificar '385910829' "\`${mensagemAvisoToken[0]^^}\`"
