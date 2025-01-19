@@ -4,7 +4,7 @@
 arquivoLogin="/usr/bin/dibScripts/shells/stable/bibliotecas/credenciais/credencial.sh"
 arquivoCor="/usr/bin/dibScripts/shells/stable/bibliotecas/cor/cores.txt"
 arquivoNotificacao="/usr/bin/dibScripts/shells/stable/bibliotecas/notificacao/notificarWhatsApp.txt"
-dataAtual=$(date -d "+29 days" +%d-%m-%Y)
+dataAtual=$(date -d "+30 days" +%d-%m-%Y)
 campanha='DIB'
 arquivoDeErro=~/"Área de Trabalho/erroGit"
 mensagemAviso=(
@@ -64,7 +64,7 @@ case "${dataAtual}" in
         notificar '385910829' "\`${mensagemAvisoToken[2]^^}\`"
     ;;
     '18-02-2025')
-        notificar '385910829' "\`${mensagemAvisoToken[3]^^}\`"
+        notificar '385910829' "\`*${mensagemAvisoToken[3]^^}*\`"
     ;;
     *)
         notificar '385910829' "\`Não se preocupe seu token git está de boa\`"
