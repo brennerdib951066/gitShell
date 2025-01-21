@@ -89,7 +89,7 @@ case "${dataAtual}" in
     ;;
     *)
         diaData=$(awk 'BEGIN {FS="-";OFS="-"}{dia = int($1); print $1}' <<< "${dataAtual}")
-        mesData=$(awk 'BEGIN {FS="-";OFS="-";mes = int($2); print $2}' <<< "${dataAtual}")
+        mesData=$(awk 'BEGIN {FS="-";OFS="-"}{mes = int($2); print $2}' <<< "${dataAtual}")
         #notificar '385910829' "\`Não se preocupe seu token git está de boa\`"
         [[ "${diaData}" -ge 20 && "${mesData}" -ge 2 ]] && notificar '385910829' "\`Seu token ${tokenAtual} expirou\`" ||\
         notificar '385910829' "\`Token ainda é valido\` $diaData - $mesData"
