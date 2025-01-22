@@ -13,7 +13,7 @@ listaPerguntas=('micaelly ramos' 'thales ramalho' 'lais morais' 'nathália santo
 listaPerguntasReceber=('receber aqui no konsole' 'receber no whatsapp')
 interativo='no'
 teste='sim'
-versao='1.0.5'
+versao='1.0.7'
 tipoDeVersao=(
     'beta'
     'completa'
@@ -22,10 +22,19 @@ tipoDeVersao=(
 # Na versão 1.0.3 foram adicionados está modo itálico o total de adesão, e modo negrito para os texto versão, adicioanado também a variavél tipoDeVersao
 # Na versão 1.0.4 foi adicionado uma sintaxe de visualização no whatsapp onde a letra será destacado em branco, adicionado no total de vendas, total de adesão
 # Na versão 1.0.5 foi adicionado na variavél count que busca a quantidade vendas do dia, agora faz outro filtro para buscar somente os não deletados
+# Na versão 1.0.6 foi adicionado para o arquivo de notificação via whatsapp no case canalDeAtendimento o id bot conversa da romielia, para receber as notificações de venda
+# Na versão 1.0.7 foi adicionado na no loop select de menu para execução interativo, a opção de escolher todos os gerentes para verficar o total de dados como qtds.vidas,adesão,total de vendas.
 
 # INICIO DAS FUNÇÕES
 receberNoKonsole(){
-    echo -e "\E[42;1mNa data atual ${requisicao^^} registrou\E[m \E[41;1m$((${count#*:}))\E[m"
+
+    count=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${requisicao}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /count/ {print}')
+    valorAdesao=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${requisicao}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"},{"key":"deletee","constraint_type":"equals","value":"não"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /valorDaAdesao/ {gsub(/[A-Za-z:]/,"",$0);valorDaAdeso += $0}END{print valorDaAdeso}')
+    vidas=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${requisicao}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"},{"key":"deletee","constraint_type":"equals","value":"não"},{"key":"qtds.VIdas","constraint_type":"greater than","value":"0"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",.]/,"",$0)&& /qtdsVIdas/ {gsub(/[A-Za-z:]/,"",$0);vida += $0}END{print vida}')
+
+    echo -e "\E[42;1mTotal de vendas registrou\E[m \E[45;1m$((${count#*:}))\E[m\n"
+    echo -e "\E[43;1mTotal de adesão registrou\E[m \E[45;1m${valorAdesao}\E[m\n"
+    echo -e "\E[44;1mTotal de qtds de vidas registrou\E[m \E[45;1m${vidas}\E[m\n"
 }
 
 enviarPeloServidor(){
@@ -129,7 +138,7 @@ if [[ "${interativo}" = 'yes' ]]; then
 
     PS3=$'\E[36;1mOpção:\E[m   '
     echo "${headerText^^}"
-    select menu in "${listaPerguntas[@]^^}"; do
+    select menu in "${listaPerguntas[@]^^}" "TODOS"; do
         case $REPLY in
             1) { echo -e "\E[33;1mVoce escolheu ${REPLY} ${listaPerguntas[0]^}\E[m";  requisicao="${listaPerguntas[0]}"   ; break ;}
             ;;
@@ -141,11 +150,13 @@ if [[ "${interativo}" = 'yes' ]]; then
             ;;
             5) { echo -e "\E[33;1m Voce escolheu ${REPLY} ${listaPerguntas[3]^}\E[m"; requisicao="${listaPerguntas[4]}"   ; break ;}
             ;;
+            7) { echo -e "REGISTRO DE ETIQUETAS VIVER BEM SEGUROS($(date +%d-%m-%Y))"; echo -e "__________________________________________\n" ; break; }
+            ;;
             *) echo -e 'Escolha uma opção válida'
         esac
     done
 
-    count=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${requisicao}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /count/ {print}')
+    #count=$(curl -G -H "Authorization: Bearer 5b2a5efbc5fda2ffff948979031ac33a" --data-urlencode 'constraints=[{"key":"gerente","constraint_type":"equals","value": "'"${requisicao}"'"},{"key":"Created Date","constraint_type":"greater than","value":"'"${dataAtual}"'T00:00:00Z"},{"key":"Created Date","constraint_type":"less than","value":"'"${dataAtualMaisUm}"'T00:00:00Z"}]' 'https://www.sistemaviverbemseguros.com/api/1.1/obj/bc_outrosDados' 2>- | awk -F':' 'gsub(/[ ",]/,"",$0)&& /count/ {print}')
 
     if [[ "${receber}" == "${listaPerguntasReceber[0]}" ]]; then
         receberNoKonsole
