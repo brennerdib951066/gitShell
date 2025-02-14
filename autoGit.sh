@@ -35,6 +35,7 @@ listaPastaPush=(
     'gitPy'
     'gitShell'
     'gitVbs'
+    'gitPowershell'
 )
 versao='1.0.1'
 
