@@ -52,7 +52,7 @@ notificar(){
 # Função de enviar o push para o gitHub
 enviandoPush(){
 
-    cd ~/"Área de Trabalho/${1}" 2>>/"${arquivoDeErro}" && { git add .; git commit -m "Nova atualização"; git push origin main; if [[ $? = "1" ]] ;then git pull; git push ; fi ; }
+    cd ~/"Área de Trabalho/${1}" 2>>/"${arquivoDeErro}" && { git add .; git commit -m "Nova atualização"; git push origin main; if [[ $? = "1" ]] ;then git pull; git push ; notificar '385910829' "Seu ${1^^}, precisou de passar pelo GIT PULL" ; fi ; }
     echo $i
 
 
