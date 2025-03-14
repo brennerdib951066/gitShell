@@ -10,10 +10,10 @@ arquivoNotificacao="/usr/bin/dibScripts/shells/stable/bibliotecas/notificacao/no
 
 dataAtual=$(date +%d-%m-%Y)
 datasExpiracao=(
-    '15-02-2025'
-    '16-02-2025'
-    '17-02-2025'
-    '18-02-2025'
+    '05-04-2025'
+    '06-04-2025'
+    '07-04-2025'
+    '08-04-2025'
 )
 campanha='DIB'
 arquivoDeErro=~/"Área de Trabalho/erroGit"
