@@ -42,6 +42,8 @@ esac
 { echo $'\E[33;2m👤 Criando o contato...\E[m'; sleep 1;}
 idContato=$(awk 'BEGIN{FS=":"}{gsub(/"|,.*/,"",$0);print $2}' <<< $(curl -sX POST 'https://app.bolten.io/contact/api/v1/08286680-edb5-42f0-a275-42ebc75383ff/contacts' -H 'Content-Type: Application/json' -H "Authorization: Bearer ${api}" -d '{ "attributes": { "Nome": "'${1}'","Telefone": "'${2}'"} }'))
 
+# Verificando se a variavel idCOntato esta vazio, se tiver algo deu errado!
+[[ ! "${idContato}" ]] && { echo $'\E[31;2mErro ao criar seu IDCONTATO\E[m'; exit ;}
 
 { echo $'\E[33;1m🧑 Criando o Funil...\E[m'; sleep 1;}
 curl -s POST 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities'\
