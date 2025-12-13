@@ -6,6 +6,7 @@ programas=(
     'ping'
     'curl'
 )
+dataHoje=$(date +%Y-%m-%d)
 
 # Verificações
 if [[ $# -lt 2 ]]; then
@@ -43,7 +44,7 @@ esac
 idContato=$(awk 'BEGIN{FS=":"}{gsub(/"|,.*/,"",$0);print $2}' <<< $(curl -sX POST 'https://app.bolten.io/contact/api/v1/08286680-edb5-42f0-a275-42ebc75383ff/contacts' -H 'Content-Type: Application/json' -H "Authorization: Bearer ${api}" -d '{ "attributes": { "Nome": "'${1}'","Telefone": "'${2}'"} }'))
 
 # Verificando se a variavel idCOntato esta vazio, se tiver algo deu errado!
-[[ ! "${idContato}" ]] && { echo $'\E[31;2mErro ao criar seu IDCONTATO\E[m'; exit ;}
+[[ ! "${idContato}" || ${idContato} = "BusinessRuleError" ]] && { echo $'\E[31;2mErro ao criar seu IDCONTATO\E[m'; exit ;}
 
 { echo $'\E[33;1m🧑 Criando o Funil...\E[m'; sleep 1;}
 curl -s POST 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities'\
@@ -58,3 +59,20 @@ curl -s POST 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a
         }' &>- || { echo $'\E[31;1mErro ao criar no funil do bolten\E[m'; exit;}
 
 echo -e "\E[32;1m'👤 ${1^^}' 📞 '${2}', criado com sucesso na '${status^^}'\E[m"
+
+qtdPaginancao=$(awk '{$1 = int($1/50 + 0.5); print $1}' <<< $(curl -sX GET 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities' -H "Authorization: Bearer ${api}" | jq -r '.pagination | .total'))
+# Verificando se qtdPaginancao está vazia, e estiver deu algum erro!
+[[ ! ${qtdPaginancao} ]] && { echo $'\E[31;1mNão conseguir pegar a quantidade de paginação, para buscar os dados de hoje!\E[m'; exit;}
+
+
+for ((i=qtdPaginancao;((i<=qtdPaginancao+1));i++)); do
+    echo $i
+    curl -sX GET 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities?page='${i}'' -H "Authorization: Bearer ${api}" | jq -r '.items[].attributes | select(.created_at | contains("'${dataHoje}'")) | select(.Status | contains("'${status^}'")) | .Status'
+
+    mapfile qtdsStatus <<< $(curl -sX GET 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities?page='${i}'' -H "Authorization: Bearer ${api}" | jq -r '.items[].attributes | select(.created_at | contains("'${dataHoje}'")) | select(.Status | contains("'${status^}'")) | .Status')
+    echo "${#qtdsStatus[@]} valor atual do status"
+    ((${#qtdsStatus[@]}<= 2))&& qtdsStatus=$((${#qtdsStatus[@]}+1))
+    sleep 2
+done
+
+echo "Valor de STATUS ${qtdsStatus}"
