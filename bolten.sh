@@ -2,7 +2,7 @@
 
 ############################################################################################################################
 # Programa = bolten
-# Versão = 1.0
+# Versão = 1.1
 # Descrição = 'Programa para automatizar processos da plataforma BOLTEN.IO, principalmente envios de relatórios, diáros e semanais'
 
 # Autor = "Brenner Santos"
@@ -41,36 +41,38 @@ done
 ! ping -c 1 google.com.br &>/dev/null && { echo $'\E[31;3mNão encontrei conexão com internet!\E[m'  ;exit;}
 
 
-[[ ${3} ]] &&\
-case "${3}" in
-    [cC]onexão)  status='conexão'
-    ;;
-    [Qq]ualificação)  status='qualificação'
-    ;;
-    *) { echo $'\E[36;1mPor favor use:\E[m\nCONEXÃO ou QUALIFICAÇÃO'; exit;}
-esac
+if [[  ${@} =~ get ]]; then
 
+    [[ ${3} ]] &&\
+    case "${3}" in
+        [cC]onexão)  status='conexão'
+        ;;
+        [Qq]ualificação)  status='qualificação'
+        ;;
+        *) { echo $'\E[36;1mPor favor use:\E[m\nCONEXÃO ou QUALIFICAÇÃO'; exit;}
+    esac
+else
 
+    { echo $'\E[33;2m👤 Criando o contato...\E[m'; sleep 1;}
+    idContato=$(awk 'BEGIN{FS=":"}{gsub(/"|,.*/,"",$0);print $2}' <<< $(curl -sX POST 'https://app.bolten.io/contact/api/v1/08286680-edb5-42f0-a275-42ebc75383ff/contacts' -H 'Content-Type: Application/json' -H "Authorization: Bearer ${api}" -d '{ "attributes": { "Nome": "'${1}'","Telefone": "'${2}'"} }'))
 
-{ echo $'\E[33;2m👤 Criando o contato...\E[m'; sleep 1;}
-idContato=$(awk 'BEGIN{FS=":"}{gsub(/"|,.*/,"",$0);print $2}' <<< $(curl -sX POST 'https://app.bolten.io/contact/api/v1/08286680-edb5-42f0-a275-42ebc75383ff/contacts' -H 'Content-Type: Application/json' -H "Authorization: Bearer ${api}" -d '{ "attributes": { "Nome": "'${1}'","Telefone": "'${2}'"} }'))
+    # Verificando se a variavel idCOntato esta vazio, se tiver algo deu errado!
+    [[ ! "${idContato}" || ${idContato} = "BusinessRuleError" ]] && { echo $'\E[31;2mErro ao criar seu IDCONTATO\E[m'; exit ;}
 
-# Verificando se a variavel idCOntato esta vazio, se tiver algo deu errado!
-[[ ! "${idContato}" || ${idContato} = "BusinessRuleError" ]] && { echo $'\E[31;2mErro ao criar seu IDCONTATO\E[m'; exit ;}
+    { echo $'\E[33;1m🧑 Criando o Funil...\E[m'; sleep 1;}
+    curl -s POST 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities'\
+        -H 'Content-Type: Application/json'\
+        -H "Authorization: Bearer ${api}"\
+        -d '{
+                    "attributes":{
+                        "Título": "'${1}'",
+                        "Status": "'${status^}'",
+                        "Contato": "'${idContato}'"
+                    }
+            }' &>- || { echo $'\E[31;1mErro ao criar no funil do bolten\E[m'; exit;}
 
-{ echo $'\E[33;1m🧑 Criando o Funil...\E[m'; sleep 1;}
-curl -s POST 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities'\
-    -H 'Content-Type: Application/json'\
-    -H "Authorization: Bearer ${api}"\
-    -d '{
-                "attributes":{
-                    "Título": "'${1}'",
-                    "Status": "'${status^}'",
-                    "Contato": "'${idContato}'"
-                }
-        }' &>- || { echo $'\E[31;1mErro ao criar no funil do bolten\E[m'; exit;}
-
-echo -e "\E[32;1m'👤 ${1^^}' 📞 '${2}', criado com sucesso na '${status^^}'\E[m"
+    echo -e "\E[32;1m'👤 ${1^^}' 📞 '${2}', criado com sucesso na '${status^^}'\E[m"
+fi
 
 qtdPaginancao=$(awk '{$1 = int($1/50 + 0.5); print $1}' <<< $(curl -sX GET 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities' -H "Authorization: Bearer ${api}" | jq -r '.pagination | .total'))
 # Verificando se qtdPaginancao está vazia, e estiver deu algum erro!
@@ -78,20 +80,20 @@ qtdPaginancao=$(awk '{$1 = int($1/50 + 0.5); print $1}' <<< $(curl -sX GET 'http
 
 
 for ((i=qtdPaginancao;((i<=qtdPaginancao+1));i++)); do
-    echo $i
+    #echo $i
     statusRetorno=$(curl -sX GET 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities?page='${i}'' -H "Authorization: Bearer ${api}" | jq -r '.items[].attributes | select(.created_at | contains("'${dataHoje}'")) | select(.Status | contains("'${status^}'")) | .Status')
     [[  ${statusRetorno} ]] || continue
 
     #sleep 3s
 
      qtdsStatus[q]=$(awk 'BEGIN {FS=":";qt=0}{qt++}END{print qt}' <<< $(curl -sX GET 'https://app.bolten.io/kanban/api/v1/9e62ab95-e915-4f2d-a7bf-3b7a8a0932f1/opportunities?page='${i}'' -H "Authorization: Bearer ${api}" | jq -r '.items[].attributes | select(.created_at | contains("'${dataHoje}'")) | select(.Status | contains("'${status^}'")) | .Status'))
-    echo -e "\E[33;1m${qtdsStatus[@]} valor atual do status\E[m"
+    #echo -e "\E[33;1m${qtdsStatus[@]} valor atual do status\E[m"
     #((${#qtdsStatus[@]}>= 1 && ((i=qtdPaginancao+1)) ))&& qtdsStatus=$((${#qtdsStatus[@]}+1))
     ((q++))
-    sleep 2
+    #sleep 2
 done
 # Somando todos os paramentros para saber quantos status retornaram
 qtdsStatus=$((${qtdsStatus[*]}))
 
-printf "%s\n%s" "${USER^^}:" "${qtdsStatus} ${status^}"
-#echo -e "\E[34;1mValor de STATUS ${qtdsStatus}\E[m"
+[[ ${status,} =~ "conexão" ]] && printf "%s\n%s\n%b%19s\n%s\n" "${USER^^}:" "----------------------------" "\e[33;2m${qtdsStatus} ${status^}\e[m" "|" "----------------------------" || printf "%s\n%s\n%b%14s\n%s\n" "${USER^^}:" "----------------------------" "\e[32;2m${qtdsStatus} ${status^}\e[m" "|" "----------------------------"
+
