@@ -3,6 +3,7 @@
 # Version: 1.0.4
 # Adicionada a verificação do python
 # Adicionada a verificação da instalação do pip
+# Adicionada a verificação da instalação do pip
 
 #setxkbmap -layout br
 
