@@ -1,0 +1,35 @@
+# aqui começa a função 2 das chamadas
+
+
+chamaarFuncaoPrinciapl(){
+    echo 'voce voltou para funçãoprincipal'
+    sleep 5s
+}
+
+chamadaAcoesDoSistema(){
+    echo $'\E[31;1mParece que você me chamoun é verdade função ações do sistema! \E[m'
+    echo $arquivoLogin
+    #funcaoGoogleChrome 'Denilson' 'https://studio.moises.ai/player2/aff5fa2f-4534-4c8e-8ec5-856c68103736/?context=spliter'
+
+    xinput test "$DispositivoEscolhido" | while read -r line; do
+    [[ "${line}" = 'key press   68' && ${habilitado} = 'yes' ]] && { habilitado='no'; chamaarFuncaoPrinciapl ;break ;}
+    [[ "${line}" = 'key press   67' && ${habilitado} = 'no' ]]  && habilitado='yes'
+    if [[ "${habilitado}" = 'yes' ]]; then
+            case $line in
+        ############################ LISTA FUNÇÃO DE AÇÔES DE SISTEMA #########################################################################################################
+
+                "key press   19") funcaoAcaoDoSistema 'poweroff'                                                                                        # Tecla '0'
+                ;;
+                "key press   10") funcaoAcaoDoSistema 'reboot'                                                                                          # Tecla '1'
+                ;;
+                "key press   11") funcaoAcaoDoSistema 'suspend'                                                                                         # Tecla '2'
+                ;;
+                "key press   12") funcaoAcaoDoSistema 'qdbus org.kde.ksmserver /KSMServer logout 0 0 0'                                                 # Tecla '3'
+                ;;
+
+              esac
+    fi
+done
+        ############################################# FIM ################################################################################################################
+
+}

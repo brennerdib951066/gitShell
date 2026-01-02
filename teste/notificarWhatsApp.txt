@@ -1,0 +1,76 @@
+# Ids do usuário
+
+idsBot=("385910829" "193741501")
+notificar(){
+    case "$campanha" in
+        "DIB")
+            echo 'CAIIII NO DIB'
+            sleep 2s
+            idsBot=("385910829" "193741501")
+            nomeUsuario=("Brenner Oficial" "Denner" "Brenner Internet Nossa campanha" "Brenner Internet camoanha viver bem")
+
+            chaveApi='c7e572f0-c17b-4304-9478-b68641234d6c'
+            contentType='application/json'
+            urlApi='https://backend.botconversa.com.br/api/v1/webhook/subscriber/subscriber_id/send_message/'
+
+            #mensagens=("Testando a notificação")
+            if [[ ${tipoTexto} == 'negrito' ]]; then
+                resposta="$(curl -X POST -H"Content-Type: $contentType" -H"API-KEY: $chaveApi" -d"{ \"type\": \"text\", \"value\": \"*${2}*\"}" ${urlApi/subscriber_id/${idsBot[i]}})"
+            else
+                resposta="$(curl -X POST -H"Content-Type: $contentType" -H"API-KEY: $chaveApi" -d"{ \"type\": \"text\", \"value\": \"${2}\"}" ${urlApi/subscriber_id/${idsBot[i]}})"
+            fi
+
+
+        ;;
+
+        "centralDeAtendimento")
+            echo 'CAIIII NO ATENDIMENTO'
+            sleep 2s
+            idsBot=("379274836" "109046914") # "3544041")
+            nomeUsuario=("Brenner Oficial" "Denner" "Cesar Viver Bem")
+
+            chaveApi='374ed645-c62f-4d21-8f18-d85448be68ac'
+            contentType='application/json'
+            urlApi='https://backend.botconversa.com.br/api/v1/webhook/subscriber/subscriber_id/send_message/'
+
+            #mensagens=("Testando a notificação")
+            if [[ ${tipoTexto} == 'negrito' ]]; then
+                resposta="$(curl -X POST -H"Content-Type: $contentType" -H"API-KEY: $chaveApi" -d"{ \"type\": \"text\", \"value\": \"*${2}*\"}" ${urlApi/subscriber_id/${idsBot[i]}})"
+            else
+                resposta="$(curl -X POST -H"Content-Type: $contentType" -H"API-KEY: $chaveApi" -d"{ \"type\": \"text\", \"value\": \"${2}\"}" ${urlApi/subscriber_id/${idsBot[i]}})"
+            fi
+
+        ;;
+
+        "centralDosLeads")
+            echo 'CAIIII NO LEADS'
+            sleep 2s
+            idsBot=("544731867" "543114535") # "570603946")
+            nomeUsuario=("Brenner Oficial" "Denner" "Cesar Viver Bem Pessoal")
+
+            chaveApi='d6a5598b-af5a-4a6f-9791-9b1b25b8445d'
+            contentType='application/json'
+            urlApi='https://backend.botconversa.com.br/api/v1/webhook/subscriber/subscriber_id/send_message/'
+
+            #mensagens=("Testando a notificação")
+            if [[ ${tipoTexto} == 'negrito' ]]; then
+                resposta="$(curl -X POST -H"Content-Type: $contentType" -H"API-KEY: $chaveApi" -d"{ \"type\": \"text\", \"value\": \"*${2}*\"}" ${urlApi/subscriber_id/${idsBot[i]}})"
+            else
+                resposta="$(curl -X POST -H"Content-Type: $contentType" -H"API-KEY: $chaveApi" -d"{ \"type\": \"text\", \"value\": \"${2}\"}" ${urlApi/subscriber_id/${idsBot[i]}})"
+            fi
+
+        ;;
+
+        *) { echo $'\E[31;1mNão encontrei nada para prosseguir\E[m'; exit 1 ;}
+
+    esac
+
+
+}
+
+# Aqui é uma biblioteca para fazer chamada API para enviar mensagem para o whatsaApp, através do bot conversa
+# Manter sempre a CHAVE API atualizada, para poder funcionar
+# Aqui estamos utilizando a campahia DIB
+
+
+
